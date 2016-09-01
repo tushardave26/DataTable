@@ -1,0 +1,17 @@
+{
+  "authors" : [
+    "Tushar Dave"
+  ],
+  "build-depends" : [ ],
+  "depends" : [ ],
+  "description" : "blah blah blah",
+  "name" : "DataTable",
+  "perl" : "6.c",
+  "provides" : {
+    "DataTable" : "lib/DataTable.pm6"
+  },
+  "resources" : [ ],
+  "source-url" : "",
+  "test-depends" : [ ],
+  "version" : "*"
+}
