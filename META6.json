@@ -4,7 +4,7 @@
   ],
   "build-depends" : [ ],
   "depends" : [ ],
-  "description" : "blah blah blah",
+  "description" : "Convert data files to data tables",
   "name" : "DataTable",
   "perl" : "6.c",
   "provides" : {
@@ -13,5 +13,5 @@
   "resources" : [ ],
   "source-url" : "",
   "test-depends" : [ ],
-  "version" : "*"
+  "version" : "0.0.1"
 }
