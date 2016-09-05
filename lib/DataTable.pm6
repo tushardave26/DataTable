@@ -6,21 +6,19 @@ unit class DataTable;
 
 =head1 NAME
 
-DataTable - Convert your data files to data table object
+DataTable - Convert your data files to data table
 
 =head1 SYNOPSIS
 
   use DataTable;
 
-=head1 DESCRIPTION
-
-DataTable is a module which convert various format of data files such as TEXT (.txt), CSV (.csv), and EXCEL (.xlsx) to data table object. A new data table can also be generated usign this module. It provides CRUD (Create, Retrieve, Update and Delete) methods which can be used on data table object. This methods is being described in their respective sections.
-
-=head1 METHODS
+=head1 TABLE CREATION METHODS
 
 =head2 new
 
-=head2 READ METHODS
+=head2 sub-table
+
+=head2 clone-table
 
 =head2 read-from-text
 
@@ -32,7 +30,7 @@ DataTable is a module which convert various format of data files such as TEXT (.
 
 =head2 read-from-db
 
-=head2 WRITE METHODS
+=head1 WRITE METHODS
 
 =head2 write-to-text
 
@@ -42,7 +40,7 @@ DataTable is a module which convert various format of data files such as TEXT (.
 
 =head2 write-to-db
 
-=head2 DATA ACCESS METHODS
+=head1 DATA ACCESS METHODS
 
 =head2 dim
 
@@ -60,7 +58,7 @@ DataTable is a module which convert various format of data files such as TEXT (.
 
 =head2 get-cols 
 
-=head2 DATA MANIPULATION METHODS
+=head1 DATA MANIPULATION METHODS
 
 =head2 add-elem
 
@@ -98,15 +96,11 @@ DataTable is a module which convert various format of data files such as TEXT (.
 
 =head2 rename-col
 
-=head2 TABLE METHODS
+=head1 TABLE METHODS
 
 =head2 sort-table
 
-=head2 sub-table
-
-=head2 clone-table
-
-=head2 TABLE -> TABLE METHODS
+=head1 TABLE -> TABLE METHODS
 
 =head2 row-merge
 
@@ -114,7 +108,7 @@ DataTable is a module which convert various format of data files such as TEXT (.
 
 =head2 join-tables
 
-=head2 DATA TRANSFORMATION METHODS
+=head1 TABLE TRANSFORMATION METHODS
 
 =head2 melt
 
