@@ -6,6 +6,78 @@ SYNOPSIS
 ========
 ```perl
     use DataTable;
+    
+    #initialize an empty data table
+    my $dt = DataTable.new(data => [], header => []);
+
+    # initialize data table with data
+    my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 22]], header => ["First Name", "Last Name", "Age"]], type => 0);
+    
+    # create a sub-table from exisitng table for specific rows and columns
+    my $dt1 = $dt.sub-table(rows => [1,2,5..10], cols => ["First Name", "Last Name"]);
+    
+    # create a sub-table from existing table using regex
+    my $dt1 = $dt.sub-table(cols => ["First Name", "Last Name"], patterns => ["/^Tu.$/", "/*ve$/")];
+    
+    # create a sub-table from existing table using conditional operators
+    my $dt1 = $dt.sub-table(cols => ["Age"], patterns => [">20"]);
+    
+    # create a sub-table from existing table using columns only
+    my $dt1 = $dt.sub-table(cols => ["First Name", "Last Name"]);
+    
+    # create a sub-table from existing table using columns only using range operator
+    my $dt1 = $dt.sub-table(cols => ["First Name".."Age"]);
+    
+    # create a sub-table from existing table using rows only
+    my $dt1 = $dt.sub-table(rows => [1..6]);
+    
+    # create a sub-table from existing table using columns only
+    my $dt1 = $dt.sub-table(cols => ["First Name", "Last Name"]);
+    
+    # clone the table from an original table
+    my $dt1 = $dt.clone();
+    
+    # read from tab-delimited file
+    my $dt = DataTable.read-from-text(file => "sample.txt");
+    
+    #read from space-delimited file
+    my $dt = DataTable.read-from-text(file => "sample.txt", delim => " ");
+    
+    #with other arguments
+    my $dt = DataTable.read-from-text(file => "sample.txt", header => 1, os => 0, skip-lines => 10);
+    
+    # read from tab-delimited file
+    my $dt = DataTable.read-from-csv(file => "sample.csv");
+    
+    #read from space-delimited file
+    my $dt = DataTable.read-from-csv(file => "sample.csv", delim => " ");
+    
+    #with other arguments
+    my $dt = DataTable.read-from-csv(file => "sample.csv", header => 1, os => 0, skip-lines => 10);
+    
+    # read from a file
+    my $dt = DataTable.read-from-file(file => "sample.csv");
+    
+    #read from a file with optional arguments
+    my $dt = DataTable.read-from-file(file => "sample.csv", delim => " ", header => 1, os => 0, skip-lines => 10, line-check => 5);
+    
+    # import DBIish module
+    use DBIish;
+    
+    # open database connection
+    my $dbh = DBIish.connect("mysql", :database<test>, :user<root>, :password<sa>, :RaiseError);
+    
+    # prepare query statement
+    $sth = $dbh.prepare(q:to/STATEMENT/);
+        SELECT name, description, quantity, price, quantity*price AS amount
+        FROM nom
+    STATEMENT
+    
+    # create a data table object
+    my $dt = DataTable.read-from-db(dbh => $dbh, sth => $sth);
+    
+    # print data as comma-seperate values on STDOUTPUT
+    $dt.write-to-csv;
 ```
                                                                                                        
 INTRODUCTION
@@ -395,32 +467,178 @@ This method helps to set/update value of a specific cell of the table. It accept
 3. **value** - a value to be set
 
 ### add-row
+```perl
+# add a row in existing table
+$dt.add-row(data => ["Jim", "Packt", 34]);
+
+# add a row at specific location in existing table
+$dt.add-row(data => ["Jim", "Packt", 34], index => 3);
+
+# add multiple rows in existing table
+$dt.add-row(data =>[["Jim", "Packt", 34],["Herry", "Hogan", 31]]);
+
+# add multiple rows at specific locations in existing table
+$dt.add-row(data =>[["Jim", "Packt", 34],["Herry", "Hogan", 31]], index => [1,3]);
+```
+
+This method adds new row/s in existing data table. By default, the method append the new row/s at the end of the table. The method adds the new row/s at specific location in the table with the help of `index` argument. The method accepts following arguments:
+
+1. **data** - a mandatory argument which contains an array of data values to be add. The length of it must equal to `$dt.no-of-cols()`. It accepts either an array of values while adding single row or an array of arrays of values while adding multiple rows.
+2. **index** - an optional argument which indicates to method that where it should add the data values. (**DEFAULT:** `$dt.last-row + 1`). It accepts either a scalar integer value while adding single row or an array of integer values while adding multiple rows.
 
 ### del-row
+```perl
+# delete a row of existing table
+$dt.del-row(index => 10);
+
+# delete multiple rows of existing table
+$dt.del-row(index => [1,3,10]);
+```
+
+This method deletes one or more row/s of the table. It accepts following argument:
+
+1. **index** - a mandatory argument which contains index/es for the row/s to be deleted. If one row needs to be deleted, pass the single index value. If more than one rows need to be deleted, pass an array of indexes.
 
 ### add-col
+```perl
+# add a columns in existing table
+$dt.add-col(data => ["CA", "MD", "MA"], col-name => "State");
 
-### del-row
+# add a col at specific location in existing table
+$dt.add-col(data => ["CA", "MD", "MA"], col-name => "State", index => 3);
+
+# add multiple cols in existing table
+$dt.add-col(data => [["CA", "MD", "MA"], ["12343", "21201", "08765"]], col-name => ["State", "Zip Code"]);
+
+# add multiple cols at specific locations in existing table
+$dt.add-col(data => [["CA", "MD", "MA"], ["12343", "21201", "08765"]], col-name => ["State", "Zip Code"], index => [3,4]);
+```
+
+This method adds new column/s in existing data table. By default, the method append the new column/s at the end of the table. The method adds the new row/s at specific location in the table with the help of `index` argument. The method accepts following arguments:
+
+1. **data** - a mandatory argument which contains an array of data values to be add. The length of it must equal to `$dt.no-of-rows()`. It accepts either an array of values while adding single column or an array of arrays of values while adding multiple columns.
+2. **col-name** - an optional argument which contains column name/s. It accepts a column name while adding single column or an array of column names while adding multiple columns.
+3. **index** - an optional argument which indicates to method that where it should add the column/s. (**DEFAULT:** `$dt.last-col + 1`). It accepts either a scalar integer value while adding single row or an array of integer values while adding multiple rows.
 
 ### del-col
+```perl
+# delete a column of existing table
+$dt.del-col(index => 10);
+
+# delete multiple columns of existing table
+$dt.del-col(index => [1,3,10]);
+```
+
+This method deletes one or more column/s of the table. It accepts following argument:
+
+1. **index** - a mandatory argument which contains index/es for the column/s to be deleted. If one column needs to be deleted, pass the single index value. If more than one columns need to be deleted, pass an array of indexes.
 
 ### rename-col
+```perl
+# rename a column of existing table
+$dt.rename-col(index => 10, col-name => "New Name");
+
+# delete multiple columns of existing table
+$dt.rename-col(index => [1,3,10], col-name => ["New Name1", "New Name2", "New Name3"]);
+```
+
+This method rename one or more column/s of the table. It accepts following argument:
+
+1. **index** - a mandatory argument which contains index/es for the column/s to be renamed. If one column needs to be renamed, pass the single index value. If more than one columns need to be renamed, pass an array of indexes.
+2. **col-name** - a mandatory argument which contains new column name/s to be renamed with. If one column needs to be renamed, pass the single column name. If more than one columns need to be renamed, pass an array of column names.
 
 ### swap-row
+```perl
+# swap one row with other in existing table
+$dt.swap-row(row1-index => 4, row2-index => 7);         # row-7 will take place of row-4 and vice-versa
+```
+
+This method helps to swap one row with other and vice-versa. It takes following arguments:
+
+1. **row1-index** - a mandatory argument which contains an index for a row that is going to be swaped with `row2-index` indexed row
+2. **row2-index** - a mandatory argument which contains an index for a row that is going to be swaped with `row1-index` indexed row
 
 ### swap-col
+```perl
+# swap one column with other in existing table
+$dt.swap-col(col1-index => 4, col2-index => 7);         # column-7 will take place of column-4 and vice-versa
+```
+
+This method helps to swap one column with other and vice-versa. It takes following arguments:
+
+1. **col1-index** - a mandatory argument which contains an index for a column that is going to be swaped with `col2-index` indexed column
+2. **col2-index** - a mandatory argument which contains an index for a column that is going to be swaped with `col1-index` indexed column
+
+### replace-row
+```perl
+# replace content of a row of existing table
+$dt.replace-row(index => 4, data => ["James", "Pace", 45]);
+
+# replace contents of multiple rows of existing table
+$dt.replace-row(index => [1,3,4], data => [["James", "Pace", 45], ["Harris", "Lewis", 30], ["Mary", "Patt", 52]]);
+```
+
+This method update/replace content of one or more rows. It takes following arguments:
+
+1. **index** - a mandatory argument which contains an index for a row of which content is going to be replaced/updated. If one row content needs to be replaced, pass a row index value. If more than one rows content needs to be replaced, pass an array of row indexes.
+2. **data** - a mandatory argument which contains data value for a row/s that is going to be replaced with. If one row content needs to be replaced, pass an array of values. If more than one rows content needs to be replaced, pass an array of arrays of values.
 
 ### replace-col
+```perl
+# replace content of a column of existing table
+$dt.replace-col(index => 4, data => ["M", "F", "M"]);
 
-### replace-col
+# replace contents of multiple columns of existing table
+$dt.replace-col(index => [1,3,4], data => [["James", "Jeff", "Tom"], [34, 43, 23], ["M", "M", "M"]]);
+```
+
+This method update/replace content of one or more columns. It takes following arguments:
+
+1. **index** - a mandatory argument which contains an index for a column of which content is going to be replaced/updated. If one column content needs to be replaced, pass a column index value. If more than one columns content needs to be replaced, pass an array of column indexes.
+2. **data** - a mandatory argument which contains data value for a column/s that is going to be replaced with. If one column content needs to be replaced, pass an array of values. If more than one columns content needs to be replaced, pass an array of arrays of values.
 
 ### move-row
+```perl
+# move a row to a new location in existing table
+$dt.swap-row(row-index => 4, new-index => 7);
+```
+
+This method helps to move a row to a new location in the table. The rows after to the new index will shift further down and the rows before to the new index will shift to further up. It takes following arguments:
+
+1. **row-index** - a mandatory argument which contains an index for a row to be moved at new index
+2. **new-index** - a mandatory argument which contains a new index where the row will be moved to
 
 ### move-col 
+```perl
+# move a column to a new location in existing table
+$dt.swap-col(col-index => 4, new-index => 7);
+```
+
+This method helps to move a column to a new location in the table. The columns to the left of the new index will shift further left and the columns to the right of the new index will shift to further right. It takes following arguments:
+
+1. **row-index** - a mandatory argument which contains an index for a column to be moved at new index
+2. **new-index** - a mandatory argument which contains a new index where the column will be moved to
 
 ### arrange
 
 ### modify-col
+```perl
+# define a lambda/anonymous function
+my $func = -> $x {
+    $x ** 2;
+};
+
+# modify a column content by appling "$func" to each element of it
+$dt.modify-col(function => $func, col-index => 1);
+
+# modify multiple column contents
+$dt.modify-col(function => [$func1, $func2], col-index => [1,2]);
+```
+
+This method modify content of one or more columns by applying specified function/s to them. It accepts following arguments:
+
+1. **function** - a mandatory argument which contains function/s to be applied. It accepts either a single function in case of modifying a single column or an array of functions in case of modifying more than one column.
+2. **col-index** - a mandatory argument which contains column index/es to be modified. It accepts either a single index in case of modifying a single column or an array of indexes in case of modifying more than one column.
 
 ## TABLE --> TABLE OPERATIONS
 
