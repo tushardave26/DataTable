@@ -1,6 +1,16 @@
 use v6;
-unit class DataTable;
 
+unit class DataTable:ver<0.0.1>:auth<github:tushardave26>;
+
+#custom types
+subset Int-or-Str where Int|Str;
+
+#attributes
+has Array @.data is rw is required;
+has Int-or-Str @.header is rw ;
+has Int $.type is readonly = 0;
+
+#methods
 
 =begin pod
 
