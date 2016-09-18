@@ -11,7 +11,7 @@ SYNOPSIS
     my $dt = DataTable.new(data => [], header => []);
 
     # initialize data table with data
-    my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 22]], header => ["First Name", "Last Name", "Age"]], type => 0);
+    my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 22]], header => ["First Name", "Last Name", "Age"], type => 0);
     
     # create a sub-table from exisitng table for specific rows and columns
     my $dt1 = $dt.sub-table(rows => [1,2,5..10], cols => ["First Name", "Last Name"]);
@@ -98,7 +98,7 @@ my $dt = DataTable.new(data => [], header => []);
 
 # initialize data table with data
 my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 22]],
-                       header => ["First Name", "Last Name", "Age"]],
+                       header => ["First Name", "Last Name", "Age"],
                        type => 0); 
 ```
 This method creates a new data table from scratch. It returns a data table object. It takes three arguments as described below:
