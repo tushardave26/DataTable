@@ -77,20 +77,28 @@ method last-col ( --> Int) {
     return @!header.elems - 1;
 }
 
-method col-index (Cool $col-name --> Int) {
+method col-index (Cool :$col-name --> Int) {
     
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    #return @!data.elems - 1;
+    unless so $col-name eq @!header.any {
+        fail "Column $col-name is not exists. Please check your column name.";
+    }
+    
+    return @!header.antipairs.hash{$col-name};
 }
 
-method col-name (Int $col-index --> Cool) {
+method col-name (Int :$col-index --> Cool) {
     
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    #return @!data.elems - 1;
+    if $col-index > @!header.elems - 1 {
+        fail "Column index out of bounds.";
+    }
+    
+    return @!header.[$col-index];
 }
 
 #self!sanity-check();

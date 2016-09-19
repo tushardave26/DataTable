@@ -41,12 +41,12 @@ my $l-col-index = $dt.last-col;
 say "Last col index -- ", $l-col-index;
 
 # get col-index from column name
-#my $col-index = $dt.col-index;
-#say "Col index is -- ", $col-index;
+my $col-index = $dt.col-index(col-name => "Fname");
+say "Col index for Fname is -- ", $col-index;
 
 # get col name from col index
-#my $col-name = $dt.col-name;
-#say "Col name is -- ", $col-name;
+my $col-name = $dt.col-name(col-index => 2);
+say "Col name for col-index 2 is -- ", $col-name;
 
 #my %prop;
 
