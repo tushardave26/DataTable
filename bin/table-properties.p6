@@ -7,8 +7,11 @@ use DataTable;
 
 my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30]],
     header => ["Fname", "Lname", "Age"],
-    type => 1
 );
+
+#my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30]],
+    #type => 1
+#);
 
 #my $dt = DataTable.new(data => [["Tushar", "Dave", 29, "ABC"], ["John", "Adams", 30]],
     #header => ["Fname", "Lname", "Age"],
@@ -41,12 +44,23 @@ my $l-col-index = $dt.last-col;
 say "Last col index -- ", $l-col-index;
 
 # get col-index from column name
-my $col-index = $dt.col-index(col-name => "Fname");
-say "Col index for Fname is -- ", $col-index;
+#my $col-index = $dt.col-index(col-name => "Fname");
+#say "Col index for Fname is -- ", $col-index;
 
 # get col name from col index
 my $col-name = $dt.col-name(col-index => 2);
 say "Col name for col-index 2 is -- ", $col-name;
+
+#get header
+my @header = $dt.header();
+say "Header col as Array -- ", @header;
+
+my $header = $dt.header(as => 0);
+say "Header col as Str -- ", $header;
+
+# type
+my $type = $dt.type();
+say "Type of table is -- ", $type;
 
 #my %prop;
 

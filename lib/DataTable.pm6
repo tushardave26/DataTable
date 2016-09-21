@@ -1,9 +1,11 @@
 use v6;
+use Data::Dump;
 
 unit class DataTable:ver<0.0.1>:auth<github:tushardave26>;
 
 #custom types
 subset Int-or-Str where Int|Str;
+subset Array-or-Str where Array|Str;
 
 #attributes
 has Array @.data is rw = [];
@@ -20,7 +22,12 @@ method !sanity-check () {
         fail "The number of observations in each rows are not equal.!!";
     }
 
-    # 2. check whether the number of observation meaning number elements in a row is equal to
+    # 2. check whether the header is provided in object creation or not
+    unless @!header {
+        @!header = @!data[0].keys.map('V'~*)
+    }
+
+    # 3. check whether the number of observation meaning number elements in a row is equal to
     # number of columns or not
     unless @!data.[0].elems == @!header.elems {
         fail "The number of observations and number of columns are not equal.!!";
@@ -40,9 +47,6 @@ method dim ( --> Str) {
     self!sanity-check;
 
     return join(" ", @!data.elems, @!header.elems);
-
-    #$dim.say;
-
 }
 
 method no-of-rows ( --> Int) {
@@ -101,7 +105,21 @@ method col-name (Int :$col-index --> Cool) {
     return @!header.[$col-index];
 }
 
-#self!sanity-check();
+method header (Int :$as = 1 --> Array-or-Str) {
+    
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    return $as == 1 ?? @!header !! @!header.join(" ");
+}
+
+method type ( --> Str) {
+    
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+       
+    return $!type == 0 ?? ("0: ", "Row-Wise").join("") !! ("1: ", "Col-wise").join("");
+}
 
 =begin pod
 

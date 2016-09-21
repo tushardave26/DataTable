@@ -337,7 +337,7 @@ This method retrieve the header row/line of the table. It returns the header eit
     1. 0 = as scalar or space-delimited string
     2. 1 = as array of elements
 
-### type-of-table
+### type
 ```perl
 # get the type of the table
 my $type = $dt.type();
