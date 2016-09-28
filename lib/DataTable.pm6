@@ -6,6 +6,7 @@ unit class DataTable:ver<0.0.1>:auth<github:tushardave26>;
 #custom types
 subset Int-or-Str where Int|Str;
 subset Array-or-Str where Array|Str;
+subset Array-or-Int where Array|Int;
 
 #attributes
 has Array @.data is rw = [];
@@ -27,7 +28,7 @@ method !sanity-check () {
         @!header = @!data[0].keys.map('V'~*)
     }
 
-    # 3. check whether the number of observation meaning number elements in a row is equal to
+    # 3. check whether the number of observation meaning number of elements in a row is equal to
     # number of columns or not
     unless @!data.[0].elems == @!header.elems {
         fail "The number of observations and number of columns are not equal.!!";
@@ -70,7 +71,8 @@ method last-row ( --> Int) {
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    return @!data.elems - 1;
+    #return @!data.elems - 1;
+    return @!data.end;
 }
 
 method last-col ( --> Int) {
@@ -78,7 +80,8 @@ method last-col ( --> Int) {
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    return @!header.elems - 1;
+    #return @!header.elems - 1;
+    return @!header.end;
 }
 
 method col-index (Cool :$col-name --> Int) {
@@ -102,7 +105,7 @@ method col-name (Int :$col-index --> Cool) {
         fail "Column index out of bounds.";
     }
     
-    return @!header.[$col-index];
+    return @!header[$col-index];
 }
 
 method header (Int :$as = 1 --> Array-or-Str) {
@@ -119,6 +122,61 @@ method type ( --> Str) {
     self!sanity-check;
        
     return $!type == 0 ?? ("0: ", "Row-Wise").join("") !! ("1: ", "Col-wise").join("");
+}
+
+method is-empty ( --> Bool) {
+    
+    return !@!data ?? True !! False;
+
+} 
+
+multi method get-row (Int :$index! --> Array) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if $index > self.last-row {
+        fail "Row index out of bounds";
+    }
+
+    return @!data[$index].Array;
+}
+
+multi method get-row (:@index! --> Array) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if so all @!data[@index]:exists {
+        return @!data[@index].Array;
+    } else {
+        fail "Table doesn't have one or more rows that asked. Please check your indexes.";
+    }
+}
+
+multi method get-col (Int :$index! --> Array) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if $index > self.last-col {
+        fail "Column index out of bouns";
+    }
+
+    return @!data[*;$index].Array;
+}
+
+multi method get-col (:@index! --> Array) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if so all @!header[@index]:exists {
+        my @col-data = ([Z] @!data)[@index]>>.Array;
+        return @col-data;
+    } else {
+        fail "Table doesn't have one or more columns that asked. Please check your indexes.";
+    }
 }
 
 =begin pod
