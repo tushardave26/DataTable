@@ -469,21 +469,21 @@ This method helps to set/update value of a specific cell of the table. It accept
 ### add-row
 ```perl
 # add a row in existing table
-$dt.add-row(data => ["Jim", "Packt", 34]);
+$dt.add-row(values => ["Jim", "Packt", 34]);
 
 # add a row at specific location in existing table
-$dt.add-row(data => ["Jim", "Packt", 34], index => 3);
+$dt.add-row(values => ["Jim", "Packt", 34], index => 3);
 
 # add multiple rows in existing table
-$dt.add-row(data =>[["Jim", "Packt", 34],["Herry", "Hogan", 31]]);
+$dt.add-row(values =>[["Jim", "Packt", 34],["Herry", "Hogan", 31]]);
 
 # add multiple rows at specific locations in existing table
-$dt.add-row(data =>[["Jim", "Packt", 34],["Herry", "Hogan", 31]], index => [1,3]);
+$dt.add-row(values =>[["Jim", "Packt", 34],["Herry", "Hogan", 31]], index => [1,3]);
 ```
 
 This method adds new row/s in existing data table. By default, the method append the new row/s at the end of the table. The method adds the new row/s at specific location in the table with the help of `index` argument. The method accepts following arguments:
 
-1. **data** - a mandatory argument which contains an array of data values to be add. The length of it must equal to `$dt.no-of-cols()`. It accepts either an array of values while adding single row or an array of arrays of values while adding multiple rows.
+1. **values** - a mandatory argument which contains an array of data values to be add. The length of it must equal to `$dt.no-of-cols()`. It accepts either an array of values while adding single row or an array of arrays of values while adding multiple rows.
 2. **index** - an optional argument which indicates to method that where it should add the data values. (**DEFAULT:** `$dt.last-row + 1`). It accepts either a scalar integer value while adding single row or an array of integer values while adding multiple rows.
 
 ### del-row
@@ -502,21 +502,21 @@ This method deletes one or more row/s of the table. It accepts following argumen
 ### add-col
 ```perl
 # add a columns in existing table
-$dt.add-col(data => ["CA", "MD", "MA"], col-name => "State");
+$dt.add-col(values => ["CA", "MD", "MA"], col-name => "State");
 
 # add a col at specific location in existing table
-$dt.add-col(data => ["CA", "MD", "MA"], col-name => "State", index => 3);
+$dt.add-col(values => ["CA", "MD", "MA"], col-name => "State", index => 3);
 
 # add multiple cols in existing table
-$dt.add-col(data => [["CA", "MD", "MA"], ["12343", "21201", "08765"]], col-name => ["State", "Zip Code"]);
+$dt.add-col(values => [["CA", "MD", "MA"], ["12343", "21201", "08765"]], col-name => ["State", "Zip Code"]);
 
 # add multiple cols at specific locations in existing table
-$dt.add-col(data => [["CA", "MD", "MA"], ["12343", "21201", "08765"]], col-name => ["State", "Zip Code"], index => [3,4]);
+$dt.add-col(values => [["CA", "MD", "MA"], ["12343", "21201", "08765"]], col-name => ["State", "Zip Code"], index => [3,4]);
 ```
 
 This method adds new column/s in existing data table. By default, the method append the new column/s at the end of the table. The method adds the new row/s at specific location in the table with the help of `index` argument. The method accepts following arguments:
 
-1. **data** - a mandatory argument which contains an array of data values to be add. The length of it must equal to `$dt.no-of-rows()`. It accepts either an array of values while adding single column or an array of arrays of values while adding multiple columns.
+1. **values** - a mandatory argument which contains an array of data values to be add. The length of it must equal to `$dt.no-of-rows()`. It accepts either an array of values while adding single column or an array of arrays of values while adding multiple columns.
 2. **col-name** - an optional argument which contains column name/s. It accepts a column name while adding single column or an array of column names while adding multiple columns.
 3. **index** - an optional argument which indicates to method that where it should add the column/s. (**DEFAULT:** `$dt.last-col + 1`). It accepts either a scalar integer value while adding single row or an array of integer values while adding multiple rows.
 
@@ -572,30 +572,30 @@ This method helps to swap one column with other and vice-versa. It takes followi
 ### replace-row
 ```perl
 # replace content of a row of existing table
-$dt.replace-row(index => 4, data => ["James", "Pace", 45]);
+$dt.replace-row(index => 4, values => ["James", "Pace", 45]);
 
 # replace contents of multiple rows of existing table
-$dt.replace-row(index => [1,3,4], data => [["James", "Pace", 45], ["Harris", "Lewis", 30], ["Mary", "Patt", 52]]);
+$dt.replace-row(index => [1,3,4], values => [["James", "Pace", 45], ["Harris", "Lewis", 30], ["Mary", "Patt", 52]]);
 ```
 
 This method update/replace content of one or more rows. It takes following arguments:
 
 1. **index** - a mandatory argument which contains an index for a row of which content is going to be replaced/updated. If one row content needs to be replaced, pass a row index value. If more than one rows content needs to be replaced, pass an array of row indexes.
-2. **data** - a mandatory argument which contains data value for a row/s that is going to be replaced with. If one row content needs to be replaced, pass an array of values. If more than one rows content needs to be replaced, pass an array of arrays of values.
+2. **values** - a mandatory argument which contains data value for a row/s that is going to be replaced with. If one row content needs to be replaced, pass an array of values. If more than one rows content needs to be replaced, pass an array of arrays of values.
 
 ### replace-col
 ```perl
 # replace content of a column of existing table
-$dt.replace-col(index => 4, data => ["M", "F", "M"]);
+$dt.replace-col(index => 4, values => ["M", "F", "M"]);
 
 # replace contents of multiple columns of existing table
-$dt.replace-col(index => [1,3,4], data => [["James", "Jeff", "Tom"], [34, 43, 23], ["M", "M", "M"]]);
+$dt.replace-col(index => [1,3,4], values => [["James", "Jeff", "Tom"], [34, 43, 23], ["M", "M", "M"]]);
 ```
 
 This method update/replace content of one or more columns. It takes following arguments:
 
 1. **index** - a mandatory argument which contains an index for a column of which content is going to be replaced/updated. If one column content needs to be replaced, pass a column index value. If more than one columns content needs to be replaced, pass an array of column indexes.
-2. **data** - a mandatory argument which contains data value for a column/s that is going to be replaced with. If one column content needs to be replaced, pass an array of values. If more than one columns content needs to be replaced, pass an array of arrays of values.
+2. **values** - a mandatory argument which contains data value for a column/s that is going to be replaced with. If one column content needs to be replaced, pass an array of values. If more than one columns content needs to be replaced, pass an array of arrays of values.
 
 ### move-row
 ```perl

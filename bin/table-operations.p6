@@ -18,4 +18,15 @@ my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30]],
 #my @col = $dt.get-col(index => 2);
 #@col.say;
 
+#my $val = $dt.get-elm(row-index => 1, col-index => 0);
+#$val.say;
+
+#$dt.set-elm(row-index => 1, col-index => 0, value => "Hari");
+#$dt.get-elm(row-index => 1, col-index => 0).say;
+
+#$dt.add-row(data => ["Harish", "Dave", 62]);
+$dt.add-row(values => ["Harish", "Dave", 62], index => 0);
+
+say Dump($dt.data);
+
 exit;

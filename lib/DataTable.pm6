@@ -179,6 +179,62 @@ multi method get-col (:@index! --> Array) {
     }
 }
 
+method get-elm (Int:D :$row-index!, Int:D :$col-index!) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @!data[$row-index]:exists and @!header[$col-index]:exists {
+        return @!data[$row-index;$col-index];
+    } else {
+        fail "Either row or column index doesn't exists. Please check your indexes.";
+    }
+
+}
+
+method set-elm (Int:D :$row-index!, Int:D :$col-index!, :$value!) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @!data[$row-index]:exists and @!header[$col-index]:exists {
+        @!data[$row-index;$col-index] = $value;
+    } else {
+        fail "Either row or column index doesn't exists. Please check your indexes.";
+    }
+
+    return 1;
+
+}
+
+multi method add-row (:@data!) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @data.elems == self.no-of-cols {
+        @!data[self.last-row + 1] = @data;
+    } else {
+        fail "New row elements must equal to number of columns.";
+    }
+
+    return 1;    
+}
+
+multi method add-row (:@values!, Int:D :$index!) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @values.elems == self.no-of-cols {
+        #@b.splice(0,0,[[7..8],]);
+        @!data.splice($index, 0, [@values,]);
+    } else {
+        fail "New row elements must equal to number of columns.";
+    }
+
+    return 1;
+}
 =begin pod
 
 =head1 NAME
