@@ -6,7 +6,7 @@ use lib '../lib';
 use Data::Dump;
 use DataTable;
 
-my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30]],
+my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30], ["Herry", "Reed", 50]],
     header => ["Fname", "Lname", "Age"],
 );
 
@@ -25,8 +25,11 @@ my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30]],
 #$dt.get-elm(row-index => 1, col-index => 0).say;
 
 #$dt.add-row(data => ["Harish", "Dave", 62]);
-$dt.add-row(values => ["Harish", "Dave", 62], index => 0);
+#$dt.add-row(values => ["Harish", "Dave", 62], index => 0);
 
-say Dump($dt.data);
+my @row = $dt.del-row(index => 0);
+@row.say;
+say $dt.no-of-rows();
+#say Dump($dt.data);
 
 exit;

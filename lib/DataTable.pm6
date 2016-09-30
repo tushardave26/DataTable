@@ -147,7 +147,7 @@ multi method get-row (:@index! --> Array) {
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    if so all @!data[@index]:exists {
+    if so all @!data[@index]:exists and @index.all ~~ Int {
         return @!data[@index].Array;
     } else {
         fail "Table doesn't have one or more rows that asked. Please check your indexes.";
@@ -171,7 +171,7 @@ multi method get-col (:@index! --> Array) {
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    if so all @!header[@index]:exists {
+    if so all @!header[@index]:exists and @index.all ~~ Int {
         my @col-data = ([Z] @!data)[@index]>>.Array;
         return @col-data;
     } else {
@@ -192,7 +192,7 @@ method get-elm (Int:D :$row-index!, Int:D :$col-index!) {
 
 }
 
-method set-elm (Int:D :$row-index!, Int:D :$col-index!, :$value!) {
+method set-elm (Int:D :$row-index!, Int:D :$col-index!, :$value! --> Bool) {
 
     # check the provided data consistency and other possible issues
     self!sanity-check;
@@ -203,11 +203,11 @@ method set-elm (Int:D :$row-index!, Int:D :$col-index!, :$value!) {
         fail "Either row or column index doesn't exists. Please check your indexes.";
     }
 
-    return 1;
+    return True;
 
 }
 
-multi method add-row (:@data!) {
+multi method add-row (:@data! --> Bool) {
 
     # check the provided data consistency and other possible issues
     self!sanity-check;
@@ -218,10 +218,10 @@ multi method add-row (:@data!) {
         fail "New row elements must equal to number of columns.";
     }
 
-    return 1;    
+    return True;    
 }
 
-multi method add-row (:@values!, Int:D :$index!) {
+multi method add-row (:@values!, Int:D :$index! --> Bool) {
 
     # check the provided data consistency and other possible issues
     self!sanity-check;
@@ -233,8 +233,40 @@ multi method add-row (:@values!, Int:D :$index!) {
         fail "New row elements must equal to number of columns.";
     }
 
-    return 1;
+    return True;
 }
+
+### TODO : Add "add-row" method for inserting multiple rows at multiple indexes.
+#sub insert (\array, \inserts) { for inserts { array.splice: 2*$++,0,@=$_ }; array }; say insert [[1..3],[4..6]], [[9..11],[7..8]]; 
+
+#my @array = [[1..3],[4..6],[7..9]]; my @inserts = [[<a b>], Nil, [<c d>]]; say insert array, inserts; sub insert (\array, \inserts) { my \index=$=0; for inserts { $_ and array.splice: index,0,@=$_ and index++; index++ }; array }
+
+multi method del-row (Int:D :$index! --> Array) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @!data[$index]:exists {
+        my @deleted-row = @!data.splice($index,1);
+        return @deleted-row;
+    } else {
+        fail "Row doesn't exist. Please check your index.";
+    }
+}
+
+multi method del-row (:@index! --> Array) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if so @!data[@index]:exists and @index.all ~~ Int {
+        my @deleted-rows = @!data[@index]:delete;
+        return @deleted-rows;
+    } else {
+        fail "One or more rows don't exist. Please check your indexes.";
+    }
+}
+
 =begin pod
 
 =head1 NAME
