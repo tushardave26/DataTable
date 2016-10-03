@@ -24,12 +24,13 @@ my $dt = DataTable.new(data => [["Tushar", "Dave", 29], ["John", "Adams", 30], [
 #$dt.set-elm(row-index => 1, col-index => 0, value => "Hari");
 #$dt.get-elm(row-index => 1, col-index => 0).say;
 
-#$dt.add-row(data => ["Harish", "Dave", 62]);
-#$dt.add-row(values => ["Harish", "Dave", 62], index => 0);
+#$dt.add-row(values => ["Harish", "Dave", 62]);
+$dt.add-row(values => [["Gary", "Jones", 34],["Harish", "Dave", 62]]);
 
-my @row = $dt.del-row(index => 0);
-@row.say;
-say $dt.no-of-rows();
-#say Dump($dt.data);
+#my @row = $dt.del-row(index => 0);
+#my @row = $dt.del-row(index => [0,2]);
+#@row.say;
+
+say Dump($dt.data);
 
 exit;

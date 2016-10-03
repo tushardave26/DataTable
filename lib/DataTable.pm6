@@ -207,15 +207,25 @@ method set-elm (Int:D :$row-index!, Int:D :$col-index!, :$value! --> Bool) {
 
 }
 
-multi method add-row (:@data! --> Bool) {
+multi method add-row (:@values! --> Bool) {
 
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    if @data.elems == self.no-of-cols {
-        @!data[self.last-row + 1] = @data;
+    if @values.all ~~ Positional {
+        for @values -> @value {
+            if @value.elems == self.no-of-cols {
+                @!data[self.last-row + 1] = @value;
+            } else {
+                fail "New row elements must equal to number of columns.";
+            }
+        }
     } else {
-        fail "New row elements must equal to number of columns.";
+        if @values.elems == self.no-of-cols {
+            @!data[self.last-row + 1] = @values;
+        } else {
+            fail "New row elements must equal to number of columns.";
+        }
     }
 
     return True;    
@@ -227,7 +237,6 @@ multi method add-row (:@values!, Int:D :$index! --> Bool) {
     self!sanity-check;
 
     if @values.elems == self.no-of-cols {
-        #@b.splice(0,0,[[7..8],]);
         @!data.splice($index, 0, [@values,]);
     } else {
         fail "New row elements must equal to number of columns.";
@@ -259,8 +268,24 @@ multi method del-row (:@index! --> Array) {
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
+    #my @a = [[1..4],[5..8],[9..12],[13..17]]; @a[0,2]:kv:delete; .say for @a.grep(*.so);
+    
     if so @!data[@index]:exists and @index.all ~~ Int {
-        my @deleted-rows = @!data[@index]:delete;
+        my @new-data = [];                                                                                
+        my %data-hash = @!data.pairs;                                                                           
+        my @deleted-rows = %data-hash{@index}:delete;                                                                
+        if %data-hash.elems > 0 {
+            for %data-hash.keys -> $key {                                                                           
+                @new-data.push(%data-hash{$key});                                                                  
+            }                                                                                                  
+        } else {
+            fail "No element left to return.";
+        }
+
+        #my @deleted-rows = @!data[@index]:kv:delete:v;
+        #@new-data = @!data.grep(*.so);
+        #@!data = @new-data;
+        
         return @deleted-rows;
     } else {
         fail "One or more rows don't exist. Please check your indexes.";
