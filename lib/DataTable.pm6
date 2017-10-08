@@ -1,5 +1,5 @@
-use v6;
-use Data::Dump;
+use v6.c;
+use Text::Table::Simple;
 
 unit class DataTable:ver<0.0.1>:auth<github:tushardave26>;
 
@@ -17,7 +17,7 @@ has Int $.type is readonly = 0;
 
 # This method performs several sanity checks.
 method !sanity-check () {
-    
+
     # 1. check whether all elements of all arrays of array of arrays (i.e. data) is equal or not
     unless [==] @!data {
         fail "The number of observations in each rows are not equal.!!";
@@ -34,16 +34,30 @@ method !sanity-check () {
         fail "The number of observations and number of columns are not equal.!!";
     }
 
-    # call sanity-check method within it definition
-    #self!sanity-check();
-
     #return True;
 }
 
-#my @a = [1,2,3], [4,5,6]; say [==] @a
+method get-content ( --> Array) {
+    return @!data;
+}
+
+method generate-table () {
+
+    #generate table array
+    my @table = lol2table(@!header, @!data);
+
+    #print table
+    .say for @table;
+
+}
+
+method get-table-content ( --> Array) {
+
+    return [@!header, @!data];
+}
 
 method dim ( --> Str) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
@@ -51,7 +65,7 @@ method dim ( --> Str) {
 }
 
 method no-of-rows ( --> Int) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
@@ -59,7 +73,7 @@ method no-of-rows ( --> Int) {
 }
 
 method no-of-cols ( --> Int) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
@@ -67,7 +81,7 @@ method no-of-cols ( --> Int) {
 }
 
 method last-row ( --> Int) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
@@ -76,7 +90,7 @@ method last-row ( --> Int) {
 }
 
 method last-col ( --> Int) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
@@ -85,31 +99,31 @@ method last-col ( --> Int) {
 }
 
 method col-index (Cool :$col-name --> Int) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
     unless so $col-name eq @!header.any {
         fail "Column $col-name is not exists. Please check your column name.";
     }
-    
+
     return @!header.antipairs.hash{$col-name};
 }
 
 method col-name (Int :$col-index --> Cool) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
     if $col-index > @!header.elems - 1 {
         fail "Column index out of bounds.";
     }
-    
+
     return @!header[$col-index];
 }
 
 method header (Int :$as = 1 --> Array-or-Str) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
@@ -117,18 +131,18 @@ method header (Int :$as = 1 --> Array-or-Str) {
 }
 
 method type ( --> Str) {
-    
+
     # check the provided data consistency and other possible issues
     self!sanity-check;
-       
+
     return $!type == 0 ?? ("0: ", "Row-Wise").join("") !! ("1: ", "Col-wise").join("");
 }
 
 method is-empty ( --> Bool) {
-    
+
     return !@!data ?? True !! False;
 
-} 
+}
 
 multi method get-row (Int :$index! --> Array) {
 
@@ -228,7 +242,7 @@ multi method add-row (:@values! --> Bool) {
         }
     }
 
-    return True;    
+    return True;
 }
 
 multi method add-row (:@values!, Int:D :$index! --> Bool) {
@@ -244,11 +258,6 @@ multi method add-row (:@values!, Int:D :$index! --> Bool) {
 
     return True;
 }
-
-### TODO : Add "add-row" method for inserting multiple rows at multiple indexes.
-#sub insert (\array, \inserts) { for inserts { array.splice: 2*$++,0,@=$_ }; array }; say insert [[1..3],[4..6]], [[9..11],[7..8]]; 
-
-#my @array = [[1..3],[4..6],[7..9]]; my @inserts = [[<a b>], Nil, [<c d>]]; say insert array, inserts; sub insert (\array, \inserts) { my \index=$=0; for inserts { $_ and array.splice: index,0,@=$_ and index++; index++ }; array }
 
 multi method del-row (Int:D :$index! --> Array) {
 
@@ -268,30 +277,57 @@ multi method del-row (:@index! --> Array) {
     # check the provided data consistency and other possible issues
     self!sanity-check;
 
-    #my @a = [[1..4],[5..8],[9..12],[13..17]]; @a[0,2]:kv:delete; .say for @a.grep(*.so);
-    
     if so @!data[@index]:exists and @index.all ~~ Int {
-        my @new-data = [];                                                                                
-        my %data-hash = @!data.pairs;                                                                           
-        my @deleted-rows = %data-hash{@index}:delete;                                                                
+        my @new-data = [];
+        my %data-hash = @!data.pairs;
+        my @deleted-rows = %data-hash{@index}:delete;
         if %data-hash.elems > 0 {
-            for %data-hash.keys -> $key {                                                                           
-                @new-data.push(%data-hash{$key});                                                                  
-            }                                                                                                  
+            for %data-hash.keys -> $key {
+                @new-data.push(%data-hash{$key});
+            }
         } else {
             fail "No element left to return.";
         }
 
-        #my @deleted-rows = @!data[@index]:kv:delete:v;
-        #@new-data = @!data.grep(*.so);
-        #@!data = @new-data;
-        
         return @deleted-rows;
     } else {
         fail "One or more rows don't exist. Please check your indexes.";
     }
 }
 
+multi method add-col (:@values!, :$col-name is copy) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @values.elems == self.no-of-rows() {
+        unless $col-name.defined {
+            $col-name = "V" ~ self.last-col + 1;
+        }
+        @!data[*;self.last-col + 1] = @values;
+        @!header.push($col-name);
+    } else {
+        fail "Number of new column values must equal to number of rows.";
+    }
+    return True;
+}
+
+multi method add-col (:@values!, :$col-name is copy, Int:D :$index!) {
+
+    # check the provided data consistency and other possible issues
+    self!sanity-check;
+
+    if @values.elems == self.no-of-rows() {
+        unless $col-name.defined {
+            $col-name = "V" ~ self.last-col + 1;
+        }
+        @!data[*;self.last-col + 1] = @values;
+        @!header.splice($index, 0, $col-name);
+    } else {
+        fail "Number of new column values must equal to number of rows.";
+    }
+    return True;
+}
 =begin pod
 
 =head1 NAME
